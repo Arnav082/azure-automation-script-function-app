@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.python_packages/
+
+# Local settings (contains local-only config, not for the repo)
+local.settings.json
+
+# Environment
+.env
+
+# VS Code
+.vscode/
