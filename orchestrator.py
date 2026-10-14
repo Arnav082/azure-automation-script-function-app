@@ -8,7 +8,9 @@ A timer-triggered blueprint that:
 Config (App Settings / environment variables):
   - GITHUB_REPO   : "owner/repo" (e.g. "Arnav082/azure-automation-script-function-app")
   - GITHUB_BRANCH : branch name (default "main")
-  - GITHUB_PAT    : optional personal access token. Leave empty for public repos.
+
+The repo is public, so no GitHub PAT is required. (If the repo ever becomes
+private, uncomment the GITHUB_PAT lines below and set it via App Settings.)
 """
 
 import logging
@@ -31,20 +33,21 @@ def get_env(name: str, default: str = "") -> str:
 # --- GitHub config -----------------------------------------------------------
 GITHUB_REPO = get_env("GITHUB_REPO", "Arnav082/azure-automation-script-function-app")
 GITHUB_BRANCH = get_env("GITHUB_BRANCH", "main")
-# TODO: add a fine-grained, read-only PAT here later (via App Settings).
-GITHUB_PAT = get_env("GITHUB_PAT", "")
+
+# Public repo — no PAT needed. Uncomment these if the repo becomes private:
+# GITHUB_PAT = get_env("GITHUB_PAT", "")
 
 
 def fetch_script(file_path: str) -> str:
     """Fetch a raw script from GitHub.
 
-    Uses the GitHub contents API with the raw media type. When GITHUB_PAT is
-    empty (public repo), no Authorization header is sent.
+    Uses the GitHub contents API with the raw media type. No Authorization
+    header is sent because the repo is public.
     """
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}?ref={GITHUB_BRANCH}"
     headers = {"Accept": "application/vnd.github.v3.raw"}
-    if GITHUB_PAT:
-        headers["Authorization"] = f"token {GITHUB_PAT}"
+    # if GITHUB_PAT:
+    #     headers["Authorization"] = f"token {GITHUB_PAT}"
 
     response = requests.get(url, headers=headers, timeout=30)
     if response.status_code != 200:
